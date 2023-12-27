@@ -6,7 +6,6 @@ import { isExternalLink } from '..';
 export function requireUserSetup() {
   return function (next) {
     return function (node, auth) {
-      console.log(auth.isUserSetupRequired());
       if (auth.isUserSetupRequired()) {
         if (isExternalLink(router.generatePath('user-setup.steps'))) {
           window.location.href = router.generatePath('user-setup.steps');

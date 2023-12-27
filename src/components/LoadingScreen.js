@@ -5,8 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { alpha, styled } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
-//
-import Logo from './Logo';
+import Logo from 'assets/Logo';
 
 // ----------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 import UserContext from 'contexts/UserContext';
-import { MAvatar } from './@material-extend';
+import { MAvatar } from 'components/@material-extend';
 import createAvatar from 'utils/createAvatar';
 import { useAuth } from 'models/Auth';
 

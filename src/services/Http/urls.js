@@ -29,6 +29,10 @@ const Urls = {
       uri: 'auth/register',
       methods: ['POST']
     },
+    'auth.logout': {
+      uri: 'auth/logout',
+      methods: ['GET']
+    },
     'auth.forgot-password': {
       uri: 'users/password_recovery',
       methods: ['POST']
@@ -55,7 +59,56 @@ const Urls = {
     },
     'accounts.get': {
       uri: 'accounts',
-      methods: ['GET', 'HEAD']
+      methods: ['GET', 'POST', 'HEAD']
+    },
+    'account.get': {
+      uri: 'accounts/{id}',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.broker.login': {
+      uri: 'accounts/{id}/login',
+      methods: ['POST', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.history_deals_get': {
+      uri: 'accounts/{id}/history_deals_get',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.history_orders_get': {
+      uri: 'accounts/{id}/history_orders_get',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.copy_rates_range': {
+      uri: 'accounts/{id}/copy_rates_range',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.positions_get': {
+      uri: 'accounts/{id}/positions_get',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.orders_get': {
+      uri: 'accounts/{id}/orders_get',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
     },
     'users.me': {
       uri: 'users/me',
@@ -107,6 +160,28 @@ const Urls = {
       methods: ['POST'],
       bindings: {
         id: 'id'
+      }
+    },
+    'terminal.statistics.daily-net-cumulative-profit-loss': {
+      uri: 'accounts/{id}/daily_net_cumulative_profit_loss',
+      methods: ['POST'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'terminal.account.trades': {
+      uri: 'accounts/{id}/trades',
+      methods: ['GET'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'terminal.account.trades.details': {
+      uri: 'accounts/{id}/trades/{pk}',
+      methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
+      bindings: {
+        id: 'id',
+        pk: 'pk'
       }
     },
     'accounts.upload-data': {

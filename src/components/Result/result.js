@@ -1,7 +1,7 @@
 import React from 'react';
 import { experimentalStyled as styled, useTheme } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
-import EmptyContent from './empty_content';
+import EmptyContent from 'assets/empty_content';
 
 const Result = ({
   title,

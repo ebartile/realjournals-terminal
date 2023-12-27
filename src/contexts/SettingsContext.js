@@ -103,11 +103,13 @@ function SetColor(themeColor) {
 const initialState = {
   themeMode: 'light',
   themeDirection: 'ltr',
+  themeLayout: 'horizontal',
   themeColor: 'default',
   themeStretch: false,
   onChangeMode: () => {},
   onChangeDirection: () => {},
   onChangeColor: () => {},
+  onChangeLayout: () => {},
   onToggleStretch: () => {},
   setColor: PRIMARY_COLOR[0],
   colorOption: []
@@ -128,13 +130,21 @@ function SettingsProvider({ children }) {
     themeMode: saved.mode,
     themeDirection: saved.direction,
     themeColor: saved.color,
-    themeStretch: initialState.themeStretch
+    themeLayout: saved.layout,
+    themeStretch: saved.stretch
   });
 
   const onChangeMode = (event) => {
     setSettings({
       ...settings,
       themeMode: event.target.value
+    });
+  };
+
+  const onChangeLayout = (event) => {
+    setSettings({
+      ...settings,
+      themeLayout: event.target.value
     });
   };
 
@@ -167,6 +177,8 @@ function SettingsProvider({ children }) {
         onChangeMode,
         // Direction
         onChangeDirection,
+        // Navbar Horizontal
+        onChangeLayout,
         // Color
         onChangeColor,
         setColor: SetColor(settings.themeColor),

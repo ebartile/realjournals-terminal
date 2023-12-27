@@ -10,46 +10,58 @@ const config = [
   {
     key: 'auth',
     icon: lockPassword,
-    external: context.account,
+    external: null,
     path: '*',
     name: 'Auth',
     children: [
       {
         key: 'login',
         icon: loginCircle,
-        external: context.account,
+        external: null,
         path: 'login',
         name: 'Login'
       },
       {
         key: 'forgot-password',
         icon: lockUnlock,
-        external: context.account,
+        external: null,
         path: 'forgot-password',
         name: 'Forgot Password'
       },
       {
         key: 'register',
         icon: userAdd,
-        external: context.account,
+        external: null,
         path: 'register',
         name: 'Register'
-      }
-    ]
-  },
-  {
-    key: 'admin-portal',
-    icon: global,
-    external: context.admin,
-    path: '*',
-    name: 'Portal',
-    children: [
+      },
       {
-        key: 'dashboard',
-        icon: home,
-        external: context.admin,
-        path: '/',
-        name: 'Dashboard'
+        key: 'change-password',
+        icon: lockUnlock,
+        external: null,
+        path: 'change-password/:token',
+        name: 'Change Password'
+      },
+      {
+        key: 'verify-email',
+        icon: lockUnlock,
+        external: null,
+        path: 'verify-email/:token',
+        name: 'Verify Email'
+      },
+      {
+        key: 'change-email',
+        icon: lockUnlock,
+        external: null,
+        path: 'change-email/:token',
+        name: 'Change Email'
+      },
+      {
+        key: 'cancel-account',
+        icon: lockUnlock,
+        external: null,
+        path: 'cancel-account/:token',
+        name: 'Cancel Account'
       }
     ]
   },
@@ -66,36 +78,41 @@ const config = [
         external: null,
         path: '/',
         name: 'Dashboard'
-      }
-    ]
-  },
-  {
-    key: 'account-portal',
-    icon: global,
-    external: context.account,
-    path: '*',
-    name: 'Portal',
-    children: [
+      },
       {
-        key: 'dashboard',
+        key: 'trades',
         icon: home,
-        external: context.account,
-        path: '/',
-        name: 'Dashboard'
+        external: null,
+        path: 'trades',
+        name: 'Trades'
+      },
+      {
+        key: 'closed-trade',
+        icon: lockUnlock,
+        external: null,
+        path: 'closed-trade/:position',
+        name: 'Closed Trades'
+      },
+      {
+        key: 'calendar',
+        icon: home,
+        external: null,
+        path: 'calendar',
+        name: 'Calendar'
       }
     ]
   },
   {
     key: 'user-setup',
     icon: global,
-    external: context.account,
-    path: 'setup/*',
+    external: null,
+    path: 'user-setup/*',
     name: 'User Setup',
     children: [
       {
         key: 'steps',
         icon: home,
-        external: context.account,
+        external: null,
         path: '/',
         name: 'User Setup'
       }
@@ -105,7 +122,7 @@ const config = [
     key: 'account-setup',
     icon: global,
     external: null,
-    path: 'setup/*',
+    path: 'account-setup/*',
     name: 'Account Setup',
     children: [
       {

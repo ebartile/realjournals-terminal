@@ -14,10 +14,11 @@
       "routes/*": ["./routes/*"],
       "config/*": ["./config/*"],
       "assets/*": ["./assets/*"],
+      "locales/*": ["./locales/*"],
       "models/*": ["./models/*"],
       "router/*": ["./router/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.js"],
   "exclude": ["node_modules"]
 }

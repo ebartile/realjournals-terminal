@@ -1,3 +1,4 @@
+import 'locales/i18n';
 // highlight
 import 'utils/highlight';
 // scroll bar

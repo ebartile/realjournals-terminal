@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './slices/user';
 import accountReducer from './slices/account';
+import calendarReducer from './slices/calendar';
 import authReducer from './slices/auth';
 import globalReducer from './slices/global';
 import settingsReducer from './slices/settings';
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   global: globalReducer,
   settings: settingsReducer,
   user: userReducer,
+  calendar: calendarReducer,
   account: persistReducer(accountPersistConfig, accountReducer)
 });
 

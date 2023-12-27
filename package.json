@@ -62,7 +62,8 @@
     "@material-ui/lab": "^5.0.0-alpha.42",
     "@material-ui/styles": "^5.0.0-beta.4",
     "@material-ui/utils": "^5.0.0-beta.4",
-    "@react-pdf/renderer": "^2.0.19",
+    "@react-pdf/font": "2.2.0",
+    "@react-pdf/renderer": "2.1.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
@@ -121,6 +122,7 @@
     "react-image-lightbox": "^5.1.4",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intersection-observer": "^8.32.0",
+    "react-lazy-load-image-component": "^1.5.1",
     "react-map-gl": "^6.1.16",
     "react-markdown": "^7.0.0",
     "react-quill": "^2.0.0-beta.2",
@@ -132,6 +134,7 @@
     "react-sizeme": "^3.0.2",
     "react-slick": "^0.28.0",
     "react-spring": "^9.2.4",
+    "recharts": "^2.1.5",
     "redux": "^4.1.1",
     "redux-persist": "^6.0.0",
     "rehype-highlight": "^5.0.0",
@@ -152,6 +155,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/eslint-parser": "^7.15.0",
+    "@faker-js/faker": "^7.5.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -163,5 +167,8 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.3.2"
+  },
+  "resolutions": {
+    "@react-pdf/font": "2.2.0"
   }
 }

@@ -18,12 +18,19 @@ export const fetchUser = createAsyncThunk('auth/fetchUser', (arg, api) => {
   return thunkRequest(api).get(route('users.me'));
 });
 
+export const LogoutUser = createAsyncThunk('auth/logout', (arg, api) => {
+  return thunkRequest(api).get(route('auth.logout'));
+});
+
 const auth = createSlice({
   name: 'auth',
   initialState: authState,
   extraReducers: {
     [fetchUser.fulfilled]: (state, action) => {
       state.user = action.payload;
+    },
+    [LogoutUser.fulfilled]: (state, action) => {
+      state.user = null;
     }
   }
 });

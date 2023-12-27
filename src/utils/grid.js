@@ -1,9 +1,9 @@
-export const rowHeight = 100;
+export const rowHeight = 60;
 
 export const cols = {
-  xs: 1,
-  sm: 2,
-  md: 8,
+  xs: 12,
+  sm: 12,
+  md: 12,
   lg: 12
 };
 

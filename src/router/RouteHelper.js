@@ -28,7 +28,6 @@ class RouteHelper {
 
   getRoute(key) {
     const data = this.cache[key];
-    console.log(key);
     if (isEmpty(data)) {
       throw 'Route data does not exists.';
     }

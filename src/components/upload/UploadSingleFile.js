@@ -6,11 +6,11 @@ import { alpha, styled } from '@material-ui/core/styles';
 import { Paper, Box, Typography, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 // utils
 import { fData } from 'utils/formatNumber';
-import UploadIllustration from './illustration_upload';
 import { getFileThumb } from 'utils/getFileFormat';
 //
 import { varFadeInRight } from '../animate';
 import { motion } from 'framer-motion';
+import UploadIllustration from 'assets/illustration_upload';
 
 // ----------------------------------------------------------------------
 
