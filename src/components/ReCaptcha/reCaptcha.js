@@ -7,6 +7,7 @@ import { useTheme } from '@material-ui/core/styles';
 import { useRecaptcha } from 'hooks/settings';
 import { notify } from 'utils/index';
 import context from 'context';
+import useSettings from 'hooks/useSettings';
 
 let resolveExecution = null;
 let rejectExecution = null;
@@ -78,10 +79,10 @@ const ReCaptcha = forwardRef((props, ref) => {
   );
 });
 
-export function recaptchaSubmit(form, ref) {
+export function recaptchaSubmit(form, ref, settings) {
   return () => {
     const recaptcha = ref.current;
-    const size = context.settings.recaptcha.size;
+    const size = settings.size;
 
     if (size === 'invisible') {
       recaptcha

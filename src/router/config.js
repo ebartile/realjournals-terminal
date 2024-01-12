@@ -43,6 +43,13 @@ const config = [
         name: 'Change Password'
       },
       {
+        key: 'invitation',
+        icon: lockUnlock,
+        external: null,
+        path: 'invitation/:token',
+        name: 'Invitation'
+      },
+      {
         key: 'verify-email',
         icon: lockUnlock,
         external: null,
@@ -69,15 +76,15 @@ const config = [
     key: 'terminal-portal',
     icon: global,
     external: null,
-    path: '*',
+    path: 'terminal',
     name: 'Portal',
     children: [
       {
-        key: 'dashboard',
+        key: 'analytics',
         icon: home,
         external: null,
         path: '/',
-        name: 'Dashboard'
+        name: 'Analytics'
       },
       {
         key: 'trades',
@@ -87,11 +94,25 @@ const config = [
         name: 'Trades'
       },
       {
+        key: 'settings',
+        icon: home,
+        external: null,
+        path: 'settings',
+        name: 'Settings'
+      },
+      {
         key: 'closed-trade',
         icon: lockUnlock,
         external: null,
-        path: 'closed-trade/:position',
+        path: 'trades/closed-trade/:position',
         name: 'Closed Trades'
+      },
+      {
+        key: 'manage-accounts',
+        icon: lockUnlock,
+        external: null,
+        path: 'manage-accounts',
+        name: 'Manage Accounts'
       },
       {
         key: 'calendar',
@@ -131,6 +152,78 @@ const config = [
         external: null,
         path: '/',
         name: 'Account Setup'
+      }
+    ]
+  },
+  {
+    key: 'landing',
+    icon: global,
+    external: null,
+    path: '*',
+    name: 'Landing',
+    children: [
+      {
+        key: 'home',
+        icon: home,
+        external: null,
+        path: '/',
+        name: 'Home'
+      },
+      {
+        key: 'contact-us',
+        icon: global,
+        external: null,
+        path: 'contact-us',
+        name: 'Contact Us'
+      },
+      {
+        key: 'features',
+        icon: global,
+        external: null,
+        path: 'features',
+        name: 'Features'
+      },
+      {
+        key: 'pricing',
+        icon: global,
+        path: 'pricing',
+        external: null,
+        name: 'Pricing'
+      },
+      {
+        key: 'coming-soon',
+        icon: home,
+        external: null,
+        path: 'coming-soon',
+        name: 'Coming Soon'
+      },
+      {
+        key: 'logout',
+        icon: home,
+        external: null,
+        path: 'logout',
+        name: 'Logout'
+      },
+      {
+        key: '403',
+        icon: home,
+        external: null,
+        path: '403',
+        name: '403'
+      },
+      {
+        key: '404',
+        icon: home,
+        external: null,
+        path: '404',
+        name: '404'
+      },
+      {
+        key: '500',
+        icon: home,
+        external: null,
+        path: '500',
+        name: '500'
       }
     ]
   }

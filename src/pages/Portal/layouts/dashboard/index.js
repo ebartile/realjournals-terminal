@@ -44,11 +44,13 @@ export default function DashboardLayout() {
 
   const { themeLayout } = useSettings();
 
+  const layout = themeLayout || 'vertical';
+
   const isDesktop = useResponsive('up', 'lg');
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
-  const verticalLayout = themeLayout === 'vertical';
+  const verticalLayout = layout === 'vertical';
 
   if (!verticalLayout) {
     return (

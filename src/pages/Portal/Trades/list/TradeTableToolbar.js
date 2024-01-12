@@ -79,7 +79,8 @@ export default function TradeTableToolbar({
         fullWidth
         value={filterName}
         onChange={(event) => onFilterName(event.target.value)}
-        placeholder="Search Ticket number or Symbol..."
+        placeholder="Search Ticket Number"
+        type="number"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

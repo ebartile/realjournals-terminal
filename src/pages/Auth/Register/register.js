@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -42,6 +42,11 @@ import useSettings from 'hooks/useSettings';
 import { notify } from 'utils';
 import { passwordConfirmation } from 'utils/form';
 import { useRedirectPath } from 'redirect';
+import GoogleLogin from 'react-google-login';
+import { gapi } from 'gapi-script';
+import { setAccessToken, setRefreshToken, setAuthToken } from 'store/slices/global';
+import { setUser } from 'store/slices/auth';
+import { useDispatch } from 'react-redux';
 
 const RootStyle = styled(Page)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -74,14 +79,45 @@ export default function Register() {
   const [form] = Form.useForm();
   const [request, loading] = useFormRequest(form);
   const auth = useAuth();
-  const recaptchaRef = useRef();
   const recaptcha = useRecaptcha();
-  const onSubmit = recaptchaSubmit(form, recaptchaRef);
+  const recaptchaRef = useRef();
+  const onSubmit = recaptchaSubmit(form, recaptchaRef, recaptcha);
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const { themeColor, colorOption } = useSettings();
   const [currentColor, setCurrentColor] = useState(themeColor);
   const { redirectPath } = useRedirectPath();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const clientId = '884185272139-vlh8074gg07n3n5kigejkc0umb4dfvs9.apps.googleusercontent.com';
+
+  const onSuccess = async (res) => {
+    const user = {
+      grant_type: 'convert_token',
+      client_id: '28hY9aOV9EG5cMdbdrFgD5urIoV8WvtNBd1zLGm2',
+      client_secret:
+        'omUOn0A6nvQy6Ncuzyf9XzzkitZYbSvGEWLb0kZk4ecnBg0mrlz5EbdtnvT0kGH2QwQDaBKnjdblmkFXN7x1k73oXfBJTJ4PJolhj86Cs9B338gH05RgbnAFMXc9Dbvd',
+      backend: 'google-oauth2',
+      token: res.accessToken
+    };
+    request
+      .post(route('auth.convert-token'), user)
+      .then((data) => {
+        notify.success('Login was successful.');
+        dispatch(setAccessToken(data.access_token));
+        dispatch(setRefreshToken(data.refresh_token));
+      })
+      .catch((error) => {
+        if (error.response._error_message.includes('already exists')) {
+          notify.error('Your account uses email and password.');
+        }
+      });
+  };
+
+  const onFailure = (err) => {
+    notify.error('Login was unsuccessful:' + err.error);
+  };
 
   useEffect(() => {
     const colorTimer = setInterval(() => {
@@ -100,10 +136,12 @@ export default function Register() {
         .post(route('auth.register'), values)
         .then((data) => {
           notify.success('Registration was successful.');
+          dispatch(setUser(data));
+          dispatch(setAuthToken(data.auth_token));
           if (data.intended) {
             window.location.replace(data.intended);
           } else {
-            window.location.href = router.generatePath('terminal-portal.dashboard');
+            navigate(router.generatePath('terminal-portal.analytics'));
           }
         })
         .catch((error) => {
@@ -135,6 +173,12 @@ export default function Register() {
   const handleShowPassword2 = () => {
     setShowPassword2((show) => !show);
   };
+
+  useEffect(() => {
+    if (auth.user) {
+      navigate(router.generatePath('terminal-portal.analytics', { username: data.username }));
+    }
+  }, [auth.user]);
 
   return (
     <RootStyle title="Register | Real Journals">
@@ -197,16 +241,17 @@ export default function Register() {
             </Box>
           </Stack>
           <>
-            <Stack direction="row" spacing={2}>
-              <Button
+            <Stack direction="row" spacing={2} justifyContent="center">
+              <GoogleLogin
                 fullWidth
+                clientId={clientId}
                 size="large"
                 color="inherit"
                 variant="outlined"
-                href="https://api.realjournals.com/social-auth/login/google-oauth2/"
-              >
-                <Icon icon={googleFill} color="#DF3E30" height={24} />
-              </Button>
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                cookiePolicy={'single_host_origin'}
+              />
 
               {/* <Button
                 fullWidth

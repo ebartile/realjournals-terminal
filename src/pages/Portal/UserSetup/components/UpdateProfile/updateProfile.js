@@ -3,7 +3,7 @@ import { defaultTo } from 'lodash';
 import { notify } from 'utils/index';
 import UploadPhoto from 'components/UploadPhoto';
 import { route, useFormRequest } from 'services/Http';
-import { fetchUser } from 'redux/slices/auth';
+import { fetchUser } from 'store/slices/auth';
 import { parseDate } from 'utils/form';
 import { useAuth } from 'models/Auth';
 import { useDispatch } from 'react-redux';
@@ -14,17 +14,30 @@ import Result from 'components/Result';
 import TwoFactor from '../EnableTwoFactor/two_factor';
 import { countries } from 'config';
 import { useRedirectPath } from 'redirect';
+import { useNavigate } from 'react-router';
+import router from 'router/router';
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
   const auth = useAuth();
+  const navigate = useNavigate();
   const { redirectPath } = useRedirectPath();
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (!auth.user.isProfileComplete()) {
+        dispatch(fetchUser());
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch, auth]);
 
   const start = useCallback(() => {
     if (redirectPath) {
-      window.location.href = redirectPath;
+      window.location.replace(redirectPath);
     } else {
-      window.location.reload();
+      navigate(router.generatePath('terminal-portal.analytics'));
     }
   }, [redirectPath]);
 

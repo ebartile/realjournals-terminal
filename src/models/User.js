@@ -7,7 +7,7 @@ class User extends Model {
    * @returns {*}
    */
   isStaff() {
-    return this.get('is_staff', false);
+    return Boolean(this.get('is_staff', false));
   }
 
   /**
@@ -16,7 +16,7 @@ class User extends Model {
    * @returns {null|*}
    */
   isProfileComplete() {
-    return this.get('is_profile_complete', false);
+    return Boolean(this.get('is_profile_complete', false));
   }
 
   /**
@@ -25,7 +25,7 @@ class User extends Model {
    * @returns {*}
    */
   isSuperAdmin() {
-    return this.get('is_superuser', false);
+    return Boolean(this.get('is_superuser', false));
   }
 
   /**
@@ -61,25 +61,7 @@ class User extends Model {
    * @returns {boolean}
    */
   isActive() {
-    return this.get('is_active');
-  }
-
-  /**
-   * Check if profile is complete
-   *
-   * @returns {*}
-   */
-  hasAccount() {
-    return this.get('has_account');
-  }
-
-  /**
-   * Check if profile is complete
-   *
-   * @returns {*}
-   */
-  accountHasBeConfigured() {
-    return this.get('account_has_be_configured');
+    return Boolean(this.get('is_active'));
   }
 }
 

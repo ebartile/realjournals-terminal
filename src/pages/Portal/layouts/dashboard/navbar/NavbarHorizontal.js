@@ -7,7 +7,9 @@ import { HEADER } from 'config';
 // components
 import { NavSectionHorizontal } from 'components/nav-section';
 //
-import navConfig from './NavConfig';
+import SvgIconStyle from 'components/SvgIconStyle';
+import { useAuth } from 'models/Auth';
+import router from 'router';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +30,41 @@ const RootStyle = styled(AppBar)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 function NavbarHorizontal() {
+  const getIcon = (name) => <SvgIconStyle src={`/static/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+  const auth = useAuth();
+  const ICONS = {
+    blog: getIcon('ic_blog'),
+    cart: getIcon('ic_cart'),
+    chat: getIcon('ic_chat'),
+    mail: getIcon('ic_mail'),
+    user: getIcon('ic_user'),
+    kanban: getIcon('ic_kanban'),
+    banking: getIcon('ic_banking'),
+    booking: getIcon('ic_booking'),
+    invoice: getIcon('ic_invoice'),
+    settings: getIcon('ic_kanban'),
+    calendar: getIcon('ic_calendar'),
+    ecommerce: getIcon('ic_ecommerce'),
+    analytics: getIcon('ic_analytics'),
+    logout: getIcon('ic_power')
+  };
+
+  const navConfig = [
+    {
+      subheader: 'general',
+      items: [
+        {
+          title: 'analytics',
+          path: router.generatePath('terminal-portal.analytics'),
+          icon: ICONS.analytics
+        },
+        { title: 'journal', path: router.generatePath('terminal-portal.trades'), icon: ICONS.invoice },
+        { title: 'settings', path: router.generatePath('terminal-portal.settings'), icon: ICONS.settings },
+        { title: 'logout', path: router.generatePath('landing.logout'), icon: ICONS.logout }
+      ]
+    }
+  ];
+
   return (
     <RootStyle>
       <Container maxWidth={false}>

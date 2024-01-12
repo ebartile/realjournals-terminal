@@ -16,10 +16,12 @@ import Logo from 'assets/Logo';
 import Scrollbar from 'components/Scrollbar';
 import { NavSectionVertical } from 'components/nav-section';
 //
-import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
 import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
+import SvgIconStyle from 'components/SvgIconStyle';
+import { useAuth } from 'models/Auth';
+import router from 'router';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +42,41 @@ NavbarVertical.propTypes = {
 };
 
 export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
+  const getIcon = (name) => <SvgIconStyle src={`/static/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+  const auth = useAuth();
+  const ICONS = {
+    blog: getIcon('ic_blog'),
+    cart: getIcon('ic_cart'),
+    chat: getIcon('ic_chat'),
+    mail: getIcon('ic_mail'),
+    user: getIcon('ic_user'),
+    kanban: getIcon('ic_kanban'),
+    banking: getIcon('ic_banking'),
+    booking: getIcon('ic_booking'),
+    invoice: getIcon('ic_invoice'),
+    calendar: getIcon('ic_calendar'),
+    ecommerce: getIcon('ic_ecommerce'),
+    settings: getIcon('ic_kanban'),
+    analytics: getIcon('ic_analytics'),
+    logout: getIcon('ic_power')
+  };
+
+  const navConfig = [
+    {
+      subheader: 'general',
+      items: [
+        {
+          title: 'analytics',
+          path: router.generatePath('terminal-portal.analytics'),
+          icon: ICONS.analytics
+        },
+        { title: 'journal', path: router.generatePath('terminal-portal.trades'), icon: ICONS.invoice },
+        { title: 'settings', path: router.generatePath('terminal-portal.settings'), icon: ICONS.settings },
+        { title: 'logout', path: router.generatePath('landing.logout'), icon: ICONS.logout }
+      ]
+    }
+  ];
+
   const theme = useTheme();
 
   const { pathname } = useLocation();

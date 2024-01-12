@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-const value = window?.__APP__ ?? {};
+const value = {};
 const AppContext = createContext(value);
 
 export { AppContext };

@@ -8,7 +8,7 @@ import { isFunction } from 'lodash';
 import { mountHandler } from './helpers';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
-import { store, persistor } from 'redux/store';
+import { store, persistor } from 'store/store';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
@@ -61,7 +61,7 @@ const Modal = ({
       onCancel?.(closeModal);
     }
 
-    return null;
+    return closeModal?.();
   };
 
   const handleOk = () => {
@@ -70,7 +70,7 @@ const Modal = ({
     } else {
       onOk?.(closeModal, setLoading);
     }
-    return null;
+    return closeModal?.();
   };
 
   const hideAction = useMemo(() => {
@@ -175,9 +175,9 @@ Modal.propTypes = {
   rootProps: PropTypes.object,
   okText: PropTypes.string,
   okButtonProps: PropTypes.object,
-  onOk: PropTypes.func.isRequired,
+  onOk: PropTypes.func,
   cancelText: PropTypes.string,
-  onCancel: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
   cancelButtonProps: PropTypes.object,
   afterClose: PropTypes.func
 };

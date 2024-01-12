@@ -8,6 +8,7 @@ import GoogleAnalytics from 'components/general/GoogleAnalytics';
 import ScrollToTop from 'components/ScrollToTop';
 import Router from 'routes';
 import context, { AppContext } from 'context';
+import PresenceTimer from 'components/PresenceTimer';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
                 <ScrollToTop />
                 <GoogleAnalytics />
                 <Router />
+                <PresenceTimer />
               </AppContext.Provider>
             </NotistackProvider>
           </RtlLayout>

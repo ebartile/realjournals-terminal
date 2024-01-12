@@ -6,26 +6,29 @@ import roundAccountBox from '@iconify/icons-ic/round-account-box';
 import { Container, Tab, Box, Tabs, Stack } from '@material-ui/core';
 import FileImport from './fileImport';
 import AutoImport from './autoImport';
-import { useDispatch } from 'react-redux';
+import { useSubscription } from 'hooks/global';
 
 // ----------------------------------------------------------------------
 
 export default function ImportData() {
-  const [currentTab, setCurrentTab] = useState('broker sync');
-  const dispatch = useDispatch();
+  const subscription = useSubscription();
+  const [currentTab, setCurrentTab] = useState(subscription == 'free' ? 'manual' : 'automatic');
 
-  const TABS = [
-    // {
-    //   value: 'file',
-    //   icon: <Icon icon={roundAccountBox} width={20} height={20} />,
-    //   component: <FileImport />
-    // },
+  let TABS = [
     {
-      value: 'broker sync',
-      icon: <Icon icon={roundReceipt} width={20} height={20} />,
-      component: <AutoImport />
+      value: 'manual',
+      icon: <Icon icon={roundAccountBox} width={20} height={20} />,
+      component: <FileImport />
     }
   ];
+
+  if (subscription != 'free') {
+    TABS.push({
+      value: 'automatic',
+      icon: <Icon icon={roundReceipt} width={20} height={20} />,
+      component: <AutoImport />
+    });
+  }
 
   const handleChangeTab = (event, newValue) => {
     setCurrentTab(newValue);

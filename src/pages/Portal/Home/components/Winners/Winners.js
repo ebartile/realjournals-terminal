@@ -1,8 +1,11 @@
 import CheckInIllustration from 'assets/illustration_checkin';
 import { WidgetSummaryDesignOne } from 'components/WidgetSummary';
+import { useActiveAccountStats } from 'hooks/account';
 
 const Winners = () => {
-  return <WidgetSummaryDesignOne title="Winners" total={3} icon={<CheckInIllustration />} />;
+  const { total_winning_trades } = useActiveAccountStats();
+
+  return <WidgetSummaryDesignOne title="Winners" total={total_winning_trades} icon={<CheckInIllustration />} />;
 };
 
 Winners.dimensions = {

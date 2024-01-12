@@ -3,7 +3,7 @@ import QRCode from 'qrcode.react';
 import { useAuth } from 'models/Auth';
 import { route, useFormRequest, useRequest } from 'services/Http';
 import { useDispatch } from 'react-redux';
-import { fetchUser } from 'redux/slices/auth';
+import { fetchUser } from 'store/slices/auth';
 import EnableForm from './components/EnableForm';
 import { LoadingButton } from '@material-ui/lab';
 import { Alert, Box, Card, CardContent, CardHeader, Divider, Grid, Typography } from '@material-ui/core';

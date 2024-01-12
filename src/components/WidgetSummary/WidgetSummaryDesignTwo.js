@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
 // utils
-import { fShortenNumber } from 'utils/formatNumber';
 // components
 import Iconify from 'components/Iconify';
 
@@ -32,7 +31,7 @@ WidgetSummaryDesignTwo.propTypes = {
   color: PropTypes.oneOf(['primary', 'secondary', 'info', 'success', 'warning', 'error']),
   icon: PropTypes.string,
   title: PropTypes.string,
-  total: PropTypes.number
+  total: PropTypes.any
 };
 
 export default function WidgetSummaryDesignTwo({ title, total, icon, color = 'primary' }) {
@@ -55,7 +54,7 @@ export default function WidgetSummaryDesignTwo({ title, total, icon, color = 'pr
       >
         <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(total)}</Typography>
+      <Typography variant="h3">{total}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
       </Typography>

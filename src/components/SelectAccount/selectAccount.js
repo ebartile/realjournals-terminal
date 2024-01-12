@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import Account from 'models/Account';
 import { useActiveAccount, useAccounts } from 'hooks/account';
-import { setActiveAccount } from 'redux/slices/account';
+import { setActiveAccount } from 'store/slices/account';
 import { useDispatch } from 'react-redux';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { MenuItem, TextField, Typography } from '@material-ui/core';

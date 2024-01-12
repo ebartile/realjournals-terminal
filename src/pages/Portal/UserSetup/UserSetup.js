@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import StepContent from 'components/StepContent';
 import VerifyEmail from './components/VerifyEmail';
-import { fetchUser } from 'redux/slices/auth';
+import { fetchUser } from 'store/slices/auth';
 import { useDispatch } from 'react-redux';
 import Page from 'components/Page';
 import { Box, Container, Grid, Step, StepLabel, Stepper } from '@material-ui/core';
@@ -18,7 +18,8 @@ const UserSetup = () => {
   const user = auth.user;
   const theme = useTheme();
   const dispatch = useDispatch();
-  const [current, setCurrent] = useState(user.verified_email ? (user.two_factor_enabled ? 2 : 1) : 0);
+  const [current, setCurrent] = useState(user.hasVerifiedEmail() ? 1 : 0);
+  // const [current, setCurrent] = useState(user.hasVerifiedEmail() ? (user.two_factor_enabled ? 2 : 1) : 0);
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -34,10 +35,10 @@ const UserSetup = () => {
         label: 'Verify Email',
         component: <VerifyEmail />
       },
-      {
-        label: 'Enable Two Factor',
-        component: <EnableTwoFactor />
-      },
+      // {
+      //   label: 'Enable Two Factor',
+      //   component: <EnableTwoFactor />
+      // },
       {
         label: 'Update Profile',
         component: <UpdateProfile />

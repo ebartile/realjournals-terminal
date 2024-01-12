@@ -1,7 +1,5 @@
-import context from 'context';
-
 const Urls = {
-  url: 'https://' + context.api + '/v1',
+  url: 'https://api.realjournals.com/v1',
   port: null,
   defaults: {},
   routes: {
@@ -13,8 +11,8 @@ const Urls = {
       uri: 'locale/fetch',
       methods: ['GET']
     },
-    'testimonials.get': {
-      uri: 'testimonials',
+    'config.get': {
+      uri: 'config',
       methods: ['GET']
     },
     'brokers.get': {
@@ -23,6 +21,10 @@ const Urls = {
     },
     'auth.login': {
       uri: 'auth',
+      methods: ['POST']
+    },
+    'auth.convert-token': {
+      uri: 'api-auth/convert-token',
       methods: ['POST']
     },
     'auth.register': {
@@ -61,8 +63,77 @@ const Urls = {
       uri: 'accounts',
       methods: ['GET', 'POST', 'HEAD']
     },
+    'accounts.get.roles': {
+      uri: 'accounts/{id}/roles',
+      methods: ['GET', 'HEAD']
+    },
+    'accounts.upload-picture': {
+      uri: 'accounts/{id}/change_logo',
+      methods: ['POST', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.update': {
+      uri: 'accounts/{id}',
+      methods: ['PUT', 'PATCH', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.memberships': {
+      uri: 'accounts/{id}/memberships',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.memberships.invite': {
+      uri: 'accounts/{id}/memberships',
+      methods: ['POST', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.memberships.resend-invitation': {
+      uri: 'accounts/{id}/memberships/{pk}/resend_invitation',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id',
+        pk: 'pk'
+      }
+    },
+    'accounts.memberships.remove': {
+      uri: 'accounts/{id}/memberships/{pk}',
+      methods: ['DELETE', 'HEAD'],
+      bindings: {
+        id: 'id',
+        pk: 'pk'
+      }
+    },
+    'accounts.memberships.batch-remove': {
+      uri: 'accounts/{id}/memberships/batch_remove',
+      methods: ['POST', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
     'account.get': {
       uri: 'accounts/{id}',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'account.events': {
+      uri: 'accounts/{id}/events',
+      methods: ['GET', 'HEAD'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'account.get.stats': {
+      uri: 'accounts/{id}/stats',
       methods: ['GET', 'HEAD'],
       bindings: {
         id: 'id'
@@ -193,6 +264,13 @@ const Urls = {
     },
     'accounts.upload.attachments': {
       uri: 'accounts/{id}/attachments',
+      methods: ['POST'],
+      bindings: {
+        id: 'id'
+      }
+    },
+    'accounts.create_trades': {
+      uri: 'accounts/{id}/create_trades',
       methods: ['POST'],
       bindings: {
         id: 'id'

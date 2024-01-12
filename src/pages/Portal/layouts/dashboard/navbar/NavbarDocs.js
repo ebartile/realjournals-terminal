@@ -23,7 +23,7 @@ export default function NavbarDocs() {
         </Typography>
       </div>
 
-      <Button href={'/'} target="_blank" rel="noopener" variant="contained">
+      <Button href="https://docs.realjournals.com" target="_blank" rel="noopener" variant="contained">
         Documentation
       </Button>
     </Stack>

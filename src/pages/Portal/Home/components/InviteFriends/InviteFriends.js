@@ -37,9 +37,9 @@ const InviteFriends = () => {
           </Typography>
         </Stack>
 
-        <Typography variant="body2" sx={{ mt: 2, mb: 3 }}>
+        {/* <Typography variant="body2" sx={{ mt: 2, mb: 3 }}>
           Praesent egestas tristique nibh. Duis lobortis massa imperdiet quam.
-        </Typography>
+        </Typography> */}
 
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
           <OutlinedInput

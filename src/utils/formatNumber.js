@@ -15,8 +15,22 @@ export function fNumber(number) {
   return numeral(number).format();
 }
 
-export function fShortenNumber(number) {
-  return replace(numeral(number).format('0.000a'), '.000', '');
+export function fShortenNumber(number, decimals) {
+  let formatString = '0.000'; // Default format string with 3 decimal places
+
+  if (decimals === 1) {
+    formatString = '0.0a'; // Format for 1 decimal place
+  } else if (decimals === 2) {
+    formatString = '0.00a'; // Format for 2 decimal places
+  } else if (decimals === 3) {
+    formatString = '0.000a'; // Format for 3 decimal places
+  } else {
+    formatString = '0.a'; // Format for 0 decimal place
+  }
+
+  const formattedNumber = numeral(number).format(formatString);
+  // Assuming replace is available and does the intended functionality
+  return replace(formattedNumber, '.0', ''); // Remove trailing '.0'
 }
 
 export function fData(number) {

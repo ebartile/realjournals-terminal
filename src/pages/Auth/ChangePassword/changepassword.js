@@ -38,7 +38,7 @@ export default function ChangePassword() {
   const [showPassword2, setShowPassword2] = useState(false);
   const recaptcha = useRecaptcha();
   const recaptchaRef = useRef();
-  const onSubmit = recaptchaSubmit(form, recaptchaRef);
+  const onSubmit = recaptchaSubmit(form, recaptchaRef, recaptcha);
   const { token } = useParams();
 
   const handleShowPassword = () => {

@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { Navigate, Link as RouterLink } from 'react-router-dom';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
+import { Navigate, Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -22,17 +22,24 @@ import googleFill from '@iconify/icons-eva/google-fill';
 import twitterFill from '@iconify/icons-eva/twitter-fill';
 import facebookFill from '@iconify/icons-eva/facebook-fill';
 import AuthLayout from '../layouts/AuthLayout';
-import { MotionInView } from 'components/animate';
+import { MotionInView, varFadeInUp, varFadeInDown } from 'components/animate';
 import Form, { ControlLabel, TextField } from 'components/Form';
 import { route, useFormRequest } from 'services/Http';
 import { useAuth } from 'models/Auth';
 import { useRecaptcha } from 'hooks/settings';
 import ReCaptcha, { recaptchaSubmit } from 'components/ReCaptcha';
 import router from 'router';
+import { motion } from 'framer-motion';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { notify } from 'utils';
 import { useRedirectPath } from 'redirect';
+import GoogleLogin from 'react-google-login';
+import { gapi } from 'gapi-script';
+import { setAccessToken, setRefreshToken, setAuthToken } from 'store/slices/global';
+import { setUser } from 'store/slices/auth';
+import { useDispatch } from 'react-redux';
+import useSettings from 'hooks/useSettings';
 
 const RootStyle = styled(Page)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -109,14 +116,58 @@ export default function Login() {
   const [form] = Form.useForm();
   const [request, loading] = useFormRequest(form);
   const auth = useAuth();
-  const recaptchaRef = useRef();
   const recaptcha = useRecaptcha();
-  const onSubmit = recaptchaSubmit(form, recaptchaRef);
+  const recaptchaRef = useRef();
+  const onSubmit = recaptchaSubmit(form, recaptchaRef, recaptcha);
   const [showPassword, setShowPassword] = useState(false);
   const screenLeftAnimate = variantScreenLeft;
   const screenCenterAnimate = variantScreenCenter;
   const screenRightAnimate = variantScreenRight;
   const { redirectPath } = useRedirectPath();
+  const { themeColor, colorOption } = useSettings();
+  const [currentColor, setCurrentColor] = useState(themeColor);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const colorTimer = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * colorOption.length);
+      setCurrentColor(colorOption[randomIndex].name);
+    }, 5000); // 5000 milliseconds (5 seconds)
+
+    return () => {
+      clearInterval(colorTimer); // Cleanup the interval when the component unmounts
+    };
+  }, [colorOption]);
+
+  const clientId = '884185272139-vlh8074gg07n3n5kigejkc0umb4dfvs9.apps.googleusercontent.com';
+
+  const onSuccess = async (res) => {
+    const user = {
+      grant_type: 'convert_token',
+      client_id: '28hY9aOV9EG5cMdbdrFgD5urIoV8WvtNBd1zLGm2',
+      client_secret:
+        'omUOn0A6nvQy6Ncuzyf9XzzkitZYbSvGEWLb0kZk4ecnBg0mrlz5EbdtnvT0kGH2QwQDaBKnjdblmkFXN7x1k73oXfBJTJ4PJolhj86Cs9B338gH05RgbnAFMXc9Dbvd',
+      backend: 'google-oauth2',
+      token: res.accessToken
+    };
+    request
+      .post(route('auth.convert-token'), user)
+      .then((data) => {
+        notify.success('Login was successful.');
+        dispatch(setAccessToken(data.access_token));
+        dispatch(setRefreshToken(data.refresh_token));
+      })
+      .catch((error) => {
+        if (error.response._error_message.includes('already exists')) {
+          notify.error('Your account uses email and password.');
+        }
+      });
+  };
+
+  const onFailure = (err) => {
+    notify.error('Login was unsuccessful:' + err.error);
+  };
 
   const submitForm = useCallback(
     (values) => {
@@ -124,10 +175,13 @@ export default function Login() {
         .post(route('auth.login'), values)
         .then((data) => {
           notify.success('Login was successful.');
+          dispatch(setUser(data));
+          dispatch(setAuthToken(data.auth_token));
+
           if (data.intended) {
             window.location.replace(data.intended);
           } else {
-            window.location.href = router.generatePath('terminal-portal.dashboard');
+            navigate(router.generatePath('terminal-portal.analytics'));
           }
         })
         .catch((error) => {
@@ -156,6 +210,12 @@ export default function Login() {
     setShowPassword((show) => !show);
   };
 
+  useEffect(() => {
+    if (auth.user) {
+      navigate(router.generatePath('terminal-portal.analytics', { username: data.username }));
+    }
+  }, [auth.user]);
+
   return (
     <RootStyle title="Login | Real Journals">
       <AuthLayout>
@@ -167,48 +227,41 @@ export default function Login() {
 
       <MHidden width="mdDown">
         <SectionStyle sx={{ alignItems: 'center' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              position: 'relative',
-              justifyContent: 'center',
-              width: '50%'
-            }}
-          >
-            {[...Array(3)].map((_, index) => (
-              <ScreenStyle
-                key={index}
-                threshold={0.72}
-                variants={{
-                  ...(index === 0 && screenLeftAnimate),
-                  ...(index === 1 && screenCenterAnimate),
-                  ...(index === 2 && screenRightAnimate)
-                }}
-                transition={{ duration: 0.72, ease: 'easeOut' }}
-                sx={{
-                  boxShadow: `${isRTL ? -80 : 80}px -40px 80px ${alpha(
-                    isLight ? theme.palette.grey[600] : theme.palette.common.black,
-                    0.48
-                  )}`,
-                  ...(index === 0 && {
-                    zIndex: 3,
-                    position: 'absolute'
-                  }),
-                  ...(index === 1 && { zIndex: 2 }),
-                  ...(index === 2 && {
-                    zIndex: 1,
-                    position: 'absolute',
-                    boxShadow: 'none'
-                  })
-                }}
-              >
-                <img
-                  alt={`screen ${index + 1}`}
-                  src={`/static/auth/screen_${isLight ? 'light' : 'dark'}_${index + 1}.png`}
-                />
-              </ScreenStyle>
-            ))}
+          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+            Manage your trades more effectively with Real Journals
+          </Typography>
+          <Box sx={{ position: 'relative' }}>
+            <Box component="img" src="/static/home/theme-color/grid.png" />
+
+            <Box sx={{ position: 'absolute', top: 0 }}>
+              <MotionInView variants={varFadeInUp}>
+                <img alt="screen" src={`/static/home/theme-color/screen-${currentColor}.png`} />
+              </MotionInView>
+            </Box>
+
+            <Box sx={{ position: 'absolute', top: 0 }}>
+              <MotionInView variants={varFadeInDown}>
+                <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 8, repeat: Infinity }}>
+                  <img alt="sidebar" src={`/static/home/theme-color/block1-${currentColor}.png`} />
+                </motion.div>
+              </MotionInView>
+            </Box>
+
+            <Box sx={{ position: 'absolute', top: 0 }}>
+              <MotionInView variants={varFadeInDown}>
+                <motion.div animate={{ y: [-10, 10, -10] }} transition={{ duration: 8, repeat: Infinity }}>
+                  <img alt="sidebar" src={`/static/home/theme-color/block2-${currentColor}.png`} />
+                </motion.div>
+              </MotionInView>
+            </Box>
+
+            <Box sx={{ position: 'absolute', top: 0 }}>
+              <MotionInView variants={varFadeInDown}>
+                <motion.div animate={{ y: [-25, 5, -25] }} transition={{ duration: 10, repeat: Infinity }}>
+                  <img alt="sidebar" src={`/static/home/theme-color/sidebar-${currentColor}.png`} />
+                </motion.div>
+              </MotionInView>
+            </Box>
           </Box>
         </SectionStyle>
       </MHidden>
@@ -278,16 +331,17 @@ export default function Login() {
               </Typography>
             </Divider>
 
-            <Stack direction="row" spacing={2}>
-              <Button
+            <Stack direction="row" spacing={2} justifyContent="center">
+              <GoogleLogin
                 fullWidth
+                clientId={clientId}
                 size="large"
                 color="inherit"
                 variant="outlined"
-                href="https://api.realjournals.com/social-auth/login/google-oauth2/"
-              >
-                <Icon icon={googleFill} color="#DF3E30" height={24} />
-              </Button>
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                cookiePolicy={'single_host_origin'}
+              />
 
               {/* <Button
                 fullWidth

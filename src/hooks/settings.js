@@ -12,3 +12,9 @@ export function useRecaptcha() {
     return get(state, 'settings.recaptcha');
   });
 }
+
+export function useCrsfToken() {
+  return useSelector((state) => {
+    return get(state, 'settings.crsf_token');
+  });
+}

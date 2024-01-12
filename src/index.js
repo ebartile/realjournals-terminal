@@ -2,7 +2,7 @@ import 'locales/i18n';
 // highlight
 import 'utils/highlight';
 // scroll bar
-import 'simplebar/src/simplebar.css';
+import 'simplebar/dist/simplebar.css';
 // map
 import 'mapbox-gl/dist/mapbox-gl.css';
 // lightbox
@@ -18,13 +18,14 @@ import 'lazysizes';
 import 'lazysizes/plugins/attrchange/ls.attrchange';
 import 'lazysizes/plugins/object-fit/ls.object-fit';
 import 'lazysizes/plugins/parent-fit/ls.parent-fit';
+import '../node_modules/flag-icons/css/flag-icons.min.css';
 
 import 'cropperjs/dist/cropper.css';
 
 import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
-import { store, persistor } from 'redux/store';
+import { store, persistor } from 'store/store';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';

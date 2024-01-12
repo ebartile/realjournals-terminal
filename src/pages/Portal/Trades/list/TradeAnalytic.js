@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 // @mui
 import { Stack, Typography, Box, CircularProgress } from '@material-ui/core';
-// utils
-import { fShortenNumber, fCurrency } from 'utils/formatNumber';
 // components
 import Iconify from 'components/Iconify';
 
@@ -38,7 +36,7 @@ export default function TradeAnalytic({ title, total, icon, color, percent }) {
         <Typography variant="h6">{title}</Typography>
 
         <Typography variant="subtitle2">
-          {fShortenNumber(total)}{' '}
+          {total}{' '}
           <Box component="span" sx={{ color: 'text.secondary', typography: 'body2' }}>
             trades
           </Box>

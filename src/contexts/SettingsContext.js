@@ -101,10 +101,10 @@ function SetColor(themeColor) {
 }
 
 const initialState = {
-  themeMode: 'light',
+  themeMode: 'dark',
   themeDirection: 'ltr',
-  themeLayout: 'horizontal',
-  themeColor: 'default',
+  themeLayout: 'vertical',
+  themeColor: 'orange',
   themeStretch: false,
   onChangeMode: () => {},
   onChangeDirection: () => {},

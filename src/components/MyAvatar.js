@@ -6,16 +6,16 @@ import { useAuth } from 'models/Auth';
 // ----------------------------------------------------------------------
 
 export default function MyAvatar({ ...other }) {
-  const { user } = useAuth();
+  const auth = useAuth();
 
   return (
     <MAvatar
-      src={user.photo}
-      alt={user.full_name}
-      color={user.photo ? 'default' : createAvatar(user.full_name).color}
+      src={auth.user.photo}
+      alt={auth.user.full_name_display}
+      color={auth.user.photo ? 'default' : createAvatar(auth.user.full_name_display).color}
       {...other}
     >
-      {createAvatar(user.full_name).name}
+      {createAvatar(auth.user.full_name_display).name}
     </MAvatar>
   );
 }

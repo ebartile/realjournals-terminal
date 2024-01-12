@@ -4,7 +4,7 @@
     "module": "commonjs",
     "baseUrl": "src",
     "paths": {
-      "redux/*": ["./redux/*"],
+      "store/*": ["./store/*"],
       "services/*": ["./services/*"],
       "utils/*": ["./utils/*"],
       "components/*": ["./components/*"],
@@ -16,7 +16,8 @@
       "assets/*": ["./assets/*"],
       "locales/*": ["./locales/*"],
       "models/*": ["./models/*"],
-      "router/*": ["./router/*"]
+      "router/*": ["./router/*"],
+      "styles/*": ["./styles/*"]
     }
   },
   "include": ["src/**/*.js"],

@@ -1,47 +1,46 @@
-import { useSnackbar } from 'notistack5';
-import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 // @mui
 import { alpha } from '@material-ui/core/styles';
-import { Box, Divider, Typography, Stack, MenuItem } from '@material-ui/core';
-// hooks
-import useIsMountedRef from 'hooks/useIsMountedRef';
+import {
+  Avatar,
+  Typography,
+  ListItemText,
+  ListItemAvatar,
+  MenuItem,
+  Button,
+  Box,
+  Tooltip,
+  Checkbox,
+  Chip,
+  Stack
+} from '@material-ui/core';
+// utils
+import { fToNow } from 'utils/formatTime';
+import { NavLink as RouterLink } from 'react-router-dom';
 // components
-import MyAvatar from 'components/MyAvatar';
+import Iconify from 'components/Iconify';
+import Scrollbar from 'components/Scrollbar';
 import MenuPopover from 'components/MenuPopover';
+import BadgeStatus from 'components/BadgeStatus';
 import { IconButtonAnimate } from 'components/animate';
-import router from 'router';
-import { useAuth } from 'models/Auth';
+import { useAccounts, useActiveAccount } from 'hooks/account';
+import { useNavigate } from 'react-router';
+import router from 'router/router';
+import { setActiveAccount } from 'store/slices/account';
+import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    linkTo: '/'
-  },
-  {
-    label: 'Profile',
-    linkTo: '/'
-  },
-  {
-    label: 'Settings',
-    linkTo: '/'
-  }
-];
+const ITEM_HEIGHT = 64;
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
-  const navigate = useNavigate();
-
-  const auth = useAuth();
-
-  const isMountedRef = useIsMountedRef();
-
-  const { enqueueSnackbar } = useSnackbar();
-
+export default function AccountsPopover() {
   const [open, setOpen] = useState(null);
+  const navigate = useNavigate();
+  const accounts = useAccounts();
+  const dispatch = useDispatch();
+  const activeAccount = useActiveAccount();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -51,80 +50,133 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate(router.generatePath('terminal-portal.login'), { replace: true });
-
-      if (isMountedRef.current) {
-        handleClose();
-      }
-    } catch (error) {
-      console.error(error);
-      enqueueSnackbar('Unable to logout!', { variant: 'error' });
-    }
+  const handleAddAccount = () => {
+    navigate(router.generatePath('account-setup.steps'));
   };
+
+  const [direction, setDirection] = useState('row'); // Default direction is 'row'
+
+  useEffect(() => {
+    const handleResize = () => {
+      // Change direction based on device width
+      const isMobile = window.innerWidth < 600; // Adjust the breakpoint as needed
+      setDirection(isMobile ? 'column' : 'row');
+    };
+
+    // Add event listener to track window resize
+    window.addEventListener('resize', handleResize);
+
+    // Initial direction setup based on device size
+    handleResize();
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <>
-      <IconButtonAnimate
-        onClick={handleOpen}
-        sx={{
-          p: 0,
-          ...(open && {
-            '&:before': {
-              zIndex: 1,
-              content: "''",
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              position: 'absolute',
-              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8)
-            }
-          })
-        }}
-      >
-        <MyAvatar />
-      </IconButtonAnimate>
+      <Button onClick={handleOpen} variant="outlined">
+        <Stack direction="row" spacing={1} justifyContent="start">
+          <Typography variant="subtitle1">{activeAccount.username}</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {activeAccount.server}
+          </Typography>
+          {direction == 'row' && (
+            <Chip
+              size="small"
+              label={activeAccount.account_type == 'AUTO' ? 'Auto' : 'Manual'}
+              sx={{ mr: 1, mb: 1 }}
+              color={activeAccount.account_type == 'AUTO' ? 'primary' : 'info'}
+            />
+          )}
+        </Stack>
+      </Button>
 
       <MenuPopover
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleClose}
         sx={{
-          p: 0,
           mt: 1.5,
           ml: 0.75,
+          width: 320,
           '& .MuiMenuItem-root': {
-            typography: 'body2',
+            px: 1.5,
+            height: ITEM_HEIGHT,
             borderRadius: 0.75
           }
         }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle2" noWrap>
-            {auth.user?.full_name_display}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {auth.user?.email}
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography variant="subtitle1">Trading Accounts</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              You have ({accounts.data.filter((account) => Boolean(account.i_am_owner) === true).length}) accounts
+            </Typography>
+          </Box>
+          <Tooltip title="Add New Account">
+            <IconButtonAnimate color="primary" onClick={handleAddAccount}>
+              <Iconify icon="eva:plus-fill" width={20} height={20} />
+            </IconButtonAnimate>
+          </Tooltip>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Scrollbar>
+          {accounts.data
+            .filter((account) => Boolean(account.i_am_owner) === true)
+            .map((account) => (
+              <MenuItem
+                key={account.id}
+                onClick={() => {
+                  dispatch(setActiveAccount(account.id));
+                  setOpen(null);
+                }}
+              >
+                <Checkbox checked={account.username === activeAccount.username} />
 
-        <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} to={option.linkTo} component={RouterLink} onClick={handleClose}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Stack>
+                <ListItemText
+                  primaryTypographyProps={{ typography: 'subtitle2', mb: 0.25 }}
+                  secondaryTypographyProps={{ typography: 'caption' }}
+                  primary={account.username}
+                  secondary={account.server}
+                />
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
-          Logout
-        </MenuItem>
+                <Chip
+                  size="small"
+                  label={account.account_type == 'AUTO' ? 'Auto' : 'Manual'}
+                  sx={{ mr: 1, mb: 1 }}
+                  color={account.account_type == 'AUTO' ? 'primary' : 'info'}
+                />
+              </MenuItem>
+            ))}
+          <MenuItem
+            sx={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+            component={RouterLink}
+            to={router.generatePath('terminal-portal.manage-accounts')}
+          >
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Manage Accounts
+            </Typography>
+            <IconButtonAnimate
+              color="inherit"
+              sx={{
+                p: 1.25,
+                transition: (theme) => theme.transitions.create('all'),
+                '&:hover': {
+                  color: 'primary.main',
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.hoverOpacity)
+                }
+              }}
+            >
+              <Iconify icon="eva:options-2-fill" width={20} height={20} />
+            </IconButtonAnimate>
+          </MenuItem>
+        </Scrollbar>
       </MenuPopover>
     </>
   );

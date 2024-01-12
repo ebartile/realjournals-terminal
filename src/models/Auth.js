@@ -32,15 +32,6 @@ export default class Auth extends Model {
   }
 
   /**
-   * Check if user setup is required
-   *
-   * @returns {*|boolean}
-   */
-  isAccountSetupRequired() {
-    return (this.check() && !this.user.hasAccount()) || !this.user.accountHasBeConfigured();
-  }
-
-  /**
    * Get Login Id
    *
    * @returns {*}
@@ -51,6 +42,15 @@ export default class Auth extends Model {
 
   requireTwoFactor() {
     return this.user.enabledTwoFactor();
+  }
+
+  /**
+   * Check if user setup is required
+   *
+   * @returns {*|boolean}
+   */
+  isAccountSetupRequired() {
+    return this.check() && Boolean(this.user.get('account_setup'));
   }
 
   logout(request) {

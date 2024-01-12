@@ -35,7 +35,7 @@ export default function ChangeEmail() {
   const [formRequest, formLoading] = useFormRequest(form);
   const recaptcha = useRecaptcha();
   const recaptchaRef = useRef();
-  const onSubmit = recaptchaSubmit(form, recaptchaRef);
+  const onSubmit = recaptchaSubmit(form, recaptchaRef, recaptcha);
   const [changed, setChanged] = useState(false);
   const { token } = useParams();
 

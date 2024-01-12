@@ -26,11 +26,11 @@ const RootStyle = styled(Page)(({ theme }) => ({
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const recaptcha = useRecaptcha();
-  const recaptchaRef = useRef();
   const [form] = Form.useForm();
   const [formRequest, formLoading] = useFormRequest(form);
-  const onSubmit = recaptchaSubmit(form, recaptchaRef);
+  const recaptcha = useRecaptcha();
+  const recaptchaRef = useRef();
+  const onSubmit = recaptchaSubmit(form, recaptchaRef, recaptcha);
 
   const submitForm = useCallback(
     (values) => {

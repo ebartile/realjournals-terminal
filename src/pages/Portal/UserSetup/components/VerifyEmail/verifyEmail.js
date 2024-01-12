@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { fetchUser } from 'redux/slices/auth';
+import { fetchUser } from 'store/slices/auth';
 import { useDispatch } from 'react-redux';
 import { useAuth } from 'models/Auth';
 import { route, useRequest } from 'services/Http';

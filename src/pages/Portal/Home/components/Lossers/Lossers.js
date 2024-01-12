@@ -1,8 +1,10 @@
 import CheckOutIllustration from 'assets/illustration_checkout';
 import { WidgetSummaryDesignOne } from 'components/WidgetSummary';
+import { useActiveAccountStats } from 'hooks/account';
 
 const Lossers = () => {
-  return <WidgetSummaryDesignOne title="Lossers" total={6} icon={<CheckOutIllustration />} />;
+  const { total_lossing_trades } = useActiveAccountStats();
+  return <WidgetSummaryDesignOne title="Lossers" total={total_lossing_trades} icon={<CheckOutIllustration />} />;
 };
 
 Lossers.dimensions = {

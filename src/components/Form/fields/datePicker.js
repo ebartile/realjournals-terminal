@@ -20,7 +20,6 @@ const BaseDatePicker = ({ inputFormat = 'YYYY - MM - DD', value, onChange, helpe
   }
 
   helperText = isEmpty(errors) ? helperText : errors.join(', ');
-  console.log(value);
 
   return (
     <DatePicker

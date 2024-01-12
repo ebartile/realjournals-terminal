@@ -1159,3 +1159,13 @@ export const ICON = {
   NAVBAR_ITEM: 22,
   NAVBAR_ITEM_HORIZONTAL: 20
 };
+
+export const continents = [
+  { name: 'Europe', code: 'EU' },
+  { name: 'North America', code: 'NA' },
+  { name: 'South America', code: 'SA' },
+  { name: 'Africa', code: 'AF' },
+  { name: 'Asia', code: 'AS' },
+  { name: 'Oceania', code: 'OC' },
+  { name: 'Antarctica', code: 'AN' }
+];

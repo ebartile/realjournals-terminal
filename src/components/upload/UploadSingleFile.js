@@ -93,7 +93,7 @@ export default function UploadSingleFile({ error, file, sx, ...other }) {
             bgcolor: 'background.paper'
           }}
         >
-          <ListItemIcon>{getFileThumb(file.preview)}</ListItemIcon>
+          <ListItemIcon>{getFileThumb(file.path)}</ListItemIcon>
           <ListItemText
             primary={isString(file) ? file : file.path}
             secondary={isString(file) ? '' : fData(file.size)}

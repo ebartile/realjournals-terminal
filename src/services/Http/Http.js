@@ -19,20 +19,14 @@ import baseStation from '@iconify-icons/ri/base-station-fill';
 import indeterminateCircleFill from '@iconify-icons/ri/indeterminate-circle-fill';
 import { Icon } from '@iconify/react';
 import { Box } from '@material-ui/core';
-import context from 'context';
 import { useRedirectPath } from 'redirect';
+import { useTokens } from 'hooks/global';
+import router from 'router/router';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-axios.defaults.headers.common['X-CSRFToken'] = context.csrfToken;
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-axios.defaults.withCredentials = true;
-if ('auth_token' in context) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${context.auth_token}`;
-}
-
-export { axios };
 
 export default class Http {
   constructor() {
@@ -57,23 +51,21 @@ export default class Http {
 
 const unavailable = (data) => {
   modal.confirm({
-    title: data.title,
+    title: 'Unavialable',
     icon: <Box component={Icon} icon={indeterminateCircleFill} />,
-    content: data.message,
-    okText: data.action,
-    cancelButtonProps: { sx: { display: 'none' } },
-    onOk: () => window.location.reload()
+    content: data._error_message,
+    okText: 'Refresh',
+    cancelButtonProps: { sx: { display: 'none' } }
   });
 };
 
 const pageExpired = (data) => {
   modal.confirm({
-    title: data.title,
+    title: 'Session Expired',
     icon: <Box component={Icon} icon={baseStation} />,
-    content: data.message,
-    okText: data.action,
-    cancelButtonProps: { sx: { display: 'none' } },
-    onOk: () => window.location.reload()
+    content: data._error_message,
+    okText: 'Login',
+    cancelButtonProps: { sx: { display: 'none' } }
   });
 };
 
@@ -127,6 +119,12 @@ export const useRequest = () => {
               }
               case 419: {
                 pageExpired(data);
+                break;
+              }
+              case 500: {
+                if (data._error_message === 'Invalid token header. No credentials provided.') {
+                  window.location = router.generatePath('landing.logout');
+                }
                 break;
               }
               default: {
@@ -214,6 +212,12 @@ export const useFormRequest = (form) => {
               }
               case 419: {
                 pageExpired(data);
+                break;
+              }
+              case 500: {
+                if (data._error_message === 'Invalid token header. No credentials provided.') {
+                  window.location = router.generatePath('landing.logout');
+                }
                 break;
               }
               default: {
@@ -315,6 +319,12 @@ export function useUploadRequest() {
                 pageExpired(data);
                 break;
               }
+              case 500: {
+                if (data._error_message === 'Invalid token header. No credentials provided.') {
+                  window.location = router.generatePath('landing.logout');
+                }
+                break;
+              }
             }
           }
         });
@@ -397,6 +407,8 @@ export function notifyError(error) {
   }
 }
 
+export { axios };
+
 export function thunkRequest() {
   const service = new Http();
 
@@ -415,6 +427,12 @@ export function thunkRequest() {
           }
           case 419: {
             pageExpired(data);
+            break;
+          }
+          case 500: {
+            if (data._error_message === 'Invalid token header. No credentials provided.') {
+              window.location = router.generatePath('landing.logout');
+            }
             break;
           }
           default: {

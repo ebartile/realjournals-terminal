@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack5';
 // material
 import { Grid } from '@material-ui/core';
-// redux
-import { updateEvent, deleteEvent } from 'redux/slices/calendar';
 //
 import { useDispatch } from 'react-redux';
 import { WidgetSummaryDesignOne, WidgetSummaryDesignTwo } from 'components/WidgetSummary';
@@ -23,16 +21,6 @@ export default function CalendarTrades({ event, range, onCancel }) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const isCreating = !event;
-
-  const handleDelete = async () => {
-    try {
-      onCancel();
-      dispatch(deleteEvent(event.id));
-      enqueueSnackbar('Delete event success', { variant: 'success' });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <Grid container spacing={3} sx={{ mb: 7 }}>

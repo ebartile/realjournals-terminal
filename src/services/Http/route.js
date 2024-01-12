@@ -14,10 +14,10 @@ class Route {
     const origin = !this.config.absolute
       ? ''
       : this.definition.domain
-      ? `${this.config.url.match(/^\w+:\/\//)[0]}${this.definition.domain}${
-          this.config.port ? `:${this.config.port}` : ''
-        }`
-      : this.config.url;
+        ? `${this.config.url.match(/^\w+:\/\//)[0]}${this.definition.domain}${
+            this.config.port ? `:${this.config.port}` : ''
+          }`
+        : this.config.url;
 
     return `${origin}/${this.definition.uri}`.replace(/\/+$/, '');
   }
@@ -203,8 +203,8 @@ class Router extends String {
         return segments[i]
           ? { ...result, [segments[i].name]: current }
           : typeof current === 'object'
-          ? { ...result, ...current }
-          : { ...result, [current]: '' };
+            ? { ...result, ...current }
+            : { ...result, [current]: '' };
       }, {});
     } else if (
       segments.length === 1 &&

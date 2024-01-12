@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { useSnackbar } from 'notistack5';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
-import { store, persistor } from 'redux/store';
+import { store, persistor } from 'store/store';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';

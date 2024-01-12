@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { styled } from '@material-ui/core/styles';
 import { Card, Typography, Box } from '@material-ui/core';
 // utils
-import { fShortenNumber } from 'utils/formatNumber';
-
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Card)(({ theme }) => ({
@@ -19,14 +17,14 @@ const RootStyle = styled(Card)(({ theme }) => ({
 WidgetSummaryDesignOne.propTypes = {
   icon: PropTypes.any,
   title: PropTypes.string,
-  total: PropTypes.number
+  total: PropTypes.any
 };
 
 export default function WidgetSummaryDesignOne({ title, total, icon }) {
   return (
     <RootStyle>
       <div>
-        <Typography variant="h3">{fShortenNumber(total)}</Typography>
+        <Typography variant="h3">{total}</Typography>
         <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
           {title}
         </Typography>

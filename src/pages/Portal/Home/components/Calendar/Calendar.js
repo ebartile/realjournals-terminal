@@ -9,13 +9,14 @@ import { useState, useRef, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import { Card, Container, DialogTitle, useMediaQuery } from '@material-ui/core';
-import { getEvents, openModal, closeModal, updateEvent, selectEvent, selectRange } from 'redux/slices/calendar';
+import { getEvents, openModal, closeModal, selectEvent, selectRange } from 'store/slices/calendar';
 // hooks
 import useSettings from 'hooks/useSettings';
 // components
 import { DialogAnimate } from 'components/animate';
 import { CalendarTrades, CalendarStyle, CalendarToolbar } from './components';
 import { useDispatch, useSelector } from 'react-redux';
+import { useActiveAccount } from 'hooks/account';
 
 // ----------------------------------------------------------------------
 
@@ -40,9 +41,10 @@ const Calendar = () => {
   const { events, isOpenModal, selectedRange } = useSelector((state) => state.calendar);
   const startDate = selectedRange ? new Date(selectedRange.start) : new Date();
   const endDate = selectedRange ? new Date(selectedRange.end) : new Date();
+  const account = useActiveAccount();
 
   useEffect(() => {
-    dispatch(getEvents());
+    dispatch(getEvents(account.id));
   }, [dispatch]);
 
   useEffect(() => {
@@ -104,38 +106,6 @@ const Calendar = () => {
     dispatch(selectEvent(arg.event.id));
   };
 
-  const handleResizeEvent = async ({ event }) => {
-    try {
-      dispatch(
-        updateEvent(event.id, {
-          allDay: event.allDay,
-          start: event.start,
-          end: event.end
-        })
-      );
-      enqueueSnackbar('Update event success', { variant: 'success' });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleDropEvent = async ({ event }) => {
-    try {
-      dispatch(
-        updateEvent(event.id, {
-          allDay: event.allDay,
-          start: event.start,
-          end: event.end
-        })
-      );
-      enqueueSnackbar('Update event success', {
-        variant: 'success'
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleCloseModal = () => {
     dispatch(closeModal());
   };
@@ -168,9 +138,7 @@ const Calendar = () => {
             allDayMaintainDuration
             eventResizableFromStart
             select={handleSelectRange}
-            eventDrop={handleDropEvent}
             eventClick={handleSelectEvent}
-            eventResize={handleResizeEvent}
             height={isMobile ? 'auto' : 720}
             plugins={[listPlugin, dayGridPlugin, timelinePlugin, timeGridPlugin, interactionPlugin]}
           />

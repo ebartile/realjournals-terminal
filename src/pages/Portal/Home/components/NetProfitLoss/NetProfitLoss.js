@@ -8,9 +8,10 @@ import diagonalArrowLeftDownFill from '@iconify/icons-eva/diagonal-arrow-left-do
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography, Stack } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
-import { useActiveAccount } from 'hooks/account';
+import { useActiveAccount, useActiveAccountStats, useDates } from 'hooks/account';
 import { BaseOptionChart } from 'components/charts';
-import { fCurrency, fNumber, fPercent } from 'utils/formatNumber';
+import { fNumber, fPercent } from 'utils/formatNumber';
+import { fDate } from 'utils/formatTime';
 
 // ----------------------------------------------------------------------
 
@@ -39,19 +40,19 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [{ data: [111, 136, 76, 108, 74, 54, 57, 84] }];
-
 const NetProfitLoss = () => {
   const theme = useTheme();
-  const activeAccount = useActiveAccount();
+  const { net_profit, net_loss, net_profit_loss_data, net_profit_loss_labels } = useActiveAccountStats();
+  const { start_date, end_date } = useDates();
 
   let percentageNet = 0;
 
-  if (activeAccount.net_profit + activeAccount.net_loss !== 0) {
-    percentageNet = (activeAccount.net_profit / (activeAccount.net_profit + activeAccount.net_loss)) * 100;
+  if (net_profit + net_loss !== 0) {
+    percentageNet = (net_profit / (net_profit + net_loss)) * 100;
   }
 
   const chartOptions = merge(BaseOptionChart(), {
+    labels: net_profit_loss_labels,
     colors: [percentageNet < 0 ? theme.palette.warning.main : theme.palette.primary.main],
     chart: { sparkline: { enabled: true } },
     xaxis: { labels: { show: false } },
@@ -62,7 +63,7 @@ const NetProfitLoss = () => {
     tooltip: {
       marker: { show: false },
       y: {
-        formatter: (seriesName) => fCurrency(seriesName),
+        formatter: (seriesName) => seriesName,
         title: {
           formatter: () => ''
         }
@@ -93,8 +94,9 @@ const NetProfitLoss = () => {
 
       <Stack spacing={1} sx={{ p: 3 }}>
         <Typography sx={{ typography: 'subtitle2' }}>Net Profit & Loss</Typography>
-        <Typography sx={{ typography: 'h3' }}>
-          {activeAccount.currency_symbol} {fNumber(activeAccount.net_profit + activeAccount.net_loss)}
+        <Typography sx={{ typography: 'h3' }}>{fNumber(net_profit + net_loss)}</Typography>
+        <Typography sx={{ typography: 'subtitle2' }}>
+          {fDate(start_date)} - {fDate(end_date)}
         </Typography>
         <Stack direction="row" alignItems="center" flexWrap="wrap">
           <Icon width={20} height={20} icon={percentageNet >= 0 ? trendingUpFill : trendingDownFill} />
@@ -105,7 +107,7 @@ const NetProfitLoss = () => {
         </Stack>
       </Stack>
 
-      <ReactApexChart type="area" series={CHART_DATA} options={chartOptions} height={160} />
+      <ReactApexChart type="area" series={[{ data: net_profit_loss_data }]} options={chartOptions} height={160} />
     </RootStyle>
   );
 };

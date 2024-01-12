@@ -86,12 +86,14 @@ const ResponsiveWidgets = ({ widgets, page }) => {
 
       return pluck(result, 'dimensions', 'name');
     };
-    request
-      .get(route('terminal.account-page-list', { id: activeAccount.id }) + '?page=' + page)
-      .then((data) => setDimensions(createDimensions(data)))
-      .catch((error) => {
-        notify.error(error.response.data._error_message);
-      });
+    if (activeAccount.data !== undefined) {
+      request
+        .get(route('terminal.account-page-list', { id: activeAccount.id }) + '?page=' + page)
+        .then((data) => setDimensions(createDimensions(data)))
+        .catch((error) => {
+          notify.error(error.response.data._error_message);
+        });
+    }
   }, [request, widgets, page, activeAccount]);
 
   const handleDimensionChange = useCallback((value) => {

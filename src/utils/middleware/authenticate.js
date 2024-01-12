@@ -7,11 +7,7 @@ export function auth(redirect) {
   return function (next) {
     return function (node, auth) {
       if (!auth.check()) {
-        if (isExternalLink(router.generatePath(redirect))) {
-          window.location.href = router.generatePath(redirect);
-        } else {
-          return <Navigate to={router.generatePath(redirect)} replace />;
-        }
+        return <Navigate to={router.generatePath(redirect)} replace />;
       }
 
       return next(node, auth);
@@ -23,11 +19,7 @@ export function guest(redirect) {
   return function (next) {
     return function (node, auth) {
       if (auth.check()) {
-        if (isExternalLink(router.generatePath(redirect))) {
-          window.location.href = router.generatePath(redirect);
-        } else {
-          return <Navigate to={router.generatePath(redirect)} replace />;
-        }
+        return <Navigate to={router.generatePath(redirect)} replace />;
       }
 
       return next(node, auth);

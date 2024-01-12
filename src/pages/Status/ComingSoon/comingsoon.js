@@ -23,24 +23,19 @@ const SOCIALS = [
     href: 'https://facebook.com/realjournals'
   },
   {
-    name: 'Instagram',
-    icon: <Icon icon={instagramFilled} width={24} height={24} color="#D7336D" />,
-    href: 'https://instagram.com/realjournals'
-  },
-  {
     name: 'Twitter',
     icon: <Icon icon={twitterFill} width={24} height={24} color="#1C9CEA" />,
-    href: 'https://twitter.com/realjournals'
+    href: 'https://twitter.com/real_journals'
   },
   {
     name: 'Discord',
     icon: <Icon icon={discordFill} width={24} height={24} color="#7289DA" />,
-    href: 'https://discord.com/realjournals'
+    href: 'https://discord.gg/3Ku8b4cg'
   },
   {
     name: 'Telegram',
     icon: <Icon icon={telegramFill} width={24} height={24} color="#229ED9" />,
-    href: 'https://telegram.com/realjournals'
+    href: 'https://t.me/realjournals'
   }
 ];
 

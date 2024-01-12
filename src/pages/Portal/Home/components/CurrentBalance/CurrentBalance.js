@@ -8,6 +8,7 @@ import { CarouselControlsPaging1 } from 'components/carousel';
 import { MIconButton } from 'components/@material-extend';
 import { useActiveAccount } from 'hooks/account';
 import Slider from 'react-slick';
+import { fPercent } from 'utils/formatNumber';
 
 // ----------------------------------------------------------------------
 
@@ -77,8 +78,8 @@ const CurrentBalance = () => {
             <Box>
               <Typography sx={{ mb: 2, typography: 'subtitle2', opacity: 0.72 }}>Current Balance</Typography>
               <Stack direction="row" alignItems="center" spacing={1}>
-                <Typography sx={{ typography: 'h3' }}>
-                  {showCurrency ? activeAccount.currency + ' ' + activeAccount.balance : '********'}
+                <Typography sx={{ typography: 'h4' }}>
+                  {showCurrency ? activeAccount.currency_symbol + ' ' + activeAccount.balance : '********'}
                 </Typography>
                 <MIconButton color="inherit" onClick={onToggleShowCurrency} sx={{ opacity: 0.48 }}>
                   <Icon icon={showCurrency ? eyeFill : eyeOffFill} />
@@ -86,45 +87,24 @@ const CurrentBalance = () => {
               </Stack>
             </Box>
 
-            <Stack direction="row" spacing={2}>
-              <Stack direction="column" spacing={2} justifyContent="start">
-                <div>
-                  <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Trade Mode</Typography>
-                  <Typography sx={{ typography: 'subtitle1' }}>
-                    {activeAccount.trade_mode == 0 ? 'DEMO' : activeAccount.trade_mode == 1 ? 'CONTEST' : 'REAL'}
-                  </Typography>
-                </div>
-
-                <div>
-                  <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Login</Typography>
-                  <Typography sx={{ typography: 'subtitle1' }}>{activeAccount.username}</Typography>
-                </div>
-                <div>
-                  <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Server</Typography>
-                  <Typography sx={{ typography: 'subtitle1' }}>{activeAccount.server}</Typography>
-                </div>
+            <Stack direction="column" spacing={2}>
+              <Stack direction="row" spacing={2} justifyContent="start">
+                <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Trade Mode</Typography>
+                <Typography sx={{ typography: 'subtitle1' }}>
+                  {activeAccount.trade_mode == 0 ? 'DEMO' : activeAccount.trade_mode == 1 ? 'CONTEST' : 'REAL'}
+                </Typography>
               </Stack>
-              <Stack direction="column" spacing={2} justifyContent="start">
-                <div>
-                  <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Margin</Typography>
-                  <Typography sx={{ typography: 'subtitle1' }}>
-                    {showCurrency ? activeAccount.currency + ' ' + activeAccount.margin : '********'}
-                  </Typography>
-                </div>
-
-                <div>
-                  <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Leverage</Typography>
-                  <Typography sx={{ typography: 'subtitle1' }}>
-                    {showCurrency ? activeAccount.currency + ' ' + activeAccount.leverage : '********'}
-                  </Typography>
-                </div>
-
-                <div>
-                  <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Profit</Typography>
-                  <Typography sx={{ typography: 'subtitle1' }}>
-                    {showCurrency ? activeAccount.currency + ' ' + activeAccount.profit : '********'}
-                  </Typography>
-                </div>
+              <Stack direction="row" spacing={2} justifyContent="start">
+                <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Login</Typography>
+                <Typography sx={{ typography: 'subtitle1' }}>{activeAccount.username}</Typography>
+              </Stack>
+              <Stack direction="row" spacing={2} justifyContent="start">
+                <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Account Server</Typography>
+                <Typography sx={{ typography: 'subtitle1' }}>{activeAccount.server}</Typography>
+              </Stack>
+              <Stack direction="row" spacing={2} justifyContent="start">
+                <Typography sx={{ mb: 1, typography: 'caption', opacity: 0.48 }}>Margin Level</Typography>
+                <Typography sx={{ typography: 'subtitle1' }}>{fPercent(activeAccount.margin_level)}</Typography>
               </Stack>
             </Stack>
           </CardItemStyle>

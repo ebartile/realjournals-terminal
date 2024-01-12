@@ -20,7 +20,8 @@ import {
   TableContainer,
   TablePagination,
   FormControlLabel,
-  LinearProgress
+  LinearProgress,
+  Button
 } from '@material-ui/core';
 // hooks
 import useTabs from 'hooks/useTabs';
@@ -42,16 +43,19 @@ import {
   ClosedExecutedOrdersTableRow
 } from './list';
 import {
-  fetchAccount,
   fetchHistoryDeals,
   fetchHistoryOrders,
   fetchOrders,
-  fetchPositionsOrders
-} from 'redux/slices/account';
+  fetchPositionsOrders,
+  setStartDate,
+  setEndDate
+} from 'store/slices/account';
 import { useDispatch, useSelector } from 'react-redux';
-import { useActiveAccount } from 'hooks/account';
+import { useActiveAccount, useDates } from 'hooks/account';
 import { get } from 'lodash';
 import { fDateTime } from 'utils/formatTime';
+import { DisplayTime, useDatePicker } from '../Home';
+import { DesktopDateRangePicker } from '@material-ui/lab';
 
 // ----------------------------------------------------------------------
 
@@ -90,7 +94,7 @@ const ACTIVE_PENDING_ORDERS_TABLE_HEAD = [
   { id: 'type', label: 'Type', align: 'left' },
   { id: 'entry', label: 'Entry', align: 'left' },
   { id: 'price_current', label: 'Current Price', align: 'left' },
-  { id: 'profit', label: 'Profit/Loss', align: 'left' },
+  { id: 'volume_initial', label: 'Quantity', align: 'left' },
   { id: 'sl', label: 'Stop Loss', align: 'left' },
   { id: 'tp', label: 'Take Profit', align: 'left' }
 ];
@@ -139,11 +143,9 @@ export default function TradeList() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [filterStartDate, setFilterStartDate] = useState(new Date(activeAccount.start_date));
+  const { start_date, end_date } = useDates();
 
-  const [filterEndDate, setFilterEndDate] = useState(new Date(activeAccount.end_date));
-
-  const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('closed_trades');
+  const { currentTab: filterStatus, onChangeTab: onFilterStatus } = useTabs('active_trades');
 
   const [active_trades_page, setActiveTradesPage] = useState(0);
   const [closed_trades_page, setClosedTradesPage] = useState(0);
@@ -156,14 +158,13 @@ export default function TradeList() {
     setActivePendingOrdersPage(0);
     setClosedExecutedOrdersPage(0);
 
-    dispatch(fetchAccount(activeAccount.id));
-
     const queryHistoryDealsParams = new URLSearchParams();
     queryHistoryDealsParams.append('page', page + 1);
     queryHistoryDealsParams.append('itemPerPage', rowsPerPage);
     queryHistoryDealsParams.append('ticket', filterName);
-    queryHistoryDealsParams.append('date_from', fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    queryHistoryDealsParams.append('date_to', fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    queryHistoryDealsParams.append('date_from', fDateTime(start_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    queryHistoryDealsParams.append('date_to', fDateTime(end_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    queryHistoryDealsParams.append('entry', '0');
     queryHistoryDealsParams.append('entry', '1');
     queryHistoryDealsParams.append('entry', '2');
     queryHistoryDealsParams.append('entry', '3');
@@ -174,36 +175,12 @@ export default function TradeList() {
       })
     );
 
-    const queryPositionsOrdersParams = new URLSearchParams();
-    queryPositionsOrdersParams.append('page', page + 1);
-    queryPositionsOrdersParams.append('itemPerPage', rowsPerPage);
-    queryPositionsOrdersParams.append('ticket', filterName);
-    dispatch(
-      fetchPositionsOrders({
-        id: activeAccount.id,
-        queryParams: queryPositionsOrdersParams.toString()
-      })
-    );
-
-    const queryOrdersParams = new URLSearchParams();
-    queryOrdersParams.append('page', page + 1);
-    queryOrdersParams.append('itemPerPage', rowsPerPage);
-    queryOrdersParams.append('ticket', filterName);
-    queryOrdersParams.append('date_from', fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    queryOrdersParams.append('date_to', fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    dispatch(
-      fetchOrders({
-        id: activeAccount.id,
-        queryParams: queryOrdersParams.toString()
-      })
-    );
-
     const queryHistoryOrdersParams = new URLSearchParams();
     queryHistoryOrdersParams.append('page', page + 1);
     queryHistoryOrdersParams.append('itemPerPage', rowsPerPage);
     queryHistoryOrdersParams.append('ticket', filterName);
-    queryHistoryOrdersParams.append('date_from', fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    queryHistoryOrdersParams.append('date_to', fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    queryHistoryOrdersParams.append('date_from', fDateTime(start_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    queryHistoryOrdersParams.append('date_to', fDateTime(end_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
     queryHistoryOrdersParams.append('state', 0);
     queryHistoryOrdersParams.append('state', 1);
     queryHistoryOrdersParams.append('state', 2);
@@ -219,7 +196,31 @@ export default function TradeList() {
         queryParams: queryHistoryOrdersParams.toString()
       })
     );
-  }, [dispatch, rowsPerPage, filterStartDate, filterEndDate]);
+
+    // const queryPositionsOrdersParams = new URLSearchParams();
+    // queryPositionsOrdersParams.append('page', page + 1);
+    // queryPositionsOrdersParams.append('itemPerPage', rowsPerPage);
+    // queryPositionsOrdersParams.append('ticket', filterName);
+    // dispatch(
+    //   fetchPositionsOrders({
+    //     id: activeAccount.id,
+    //     queryParams: queryPositionsOrdersParams.toString()
+    //   })
+    // );
+
+    const queryOrdersParams = new URLSearchParams();
+    queryOrdersParams.append('page', page + 1);
+    queryOrdersParams.append('itemPerPage', rowsPerPage);
+    if (filterName) {
+      queryOrdersParams.append('ticket', filterName);
+    }
+    dispatch(
+      fetchOrders({
+        id: activeAccount.id,
+        queryParams: queryOrdersParams.toString()
+      })
+    );
+  }, [dispatch, rowsPerPage, start_date, end_date, activeAccount]);
 
   useEffect(() => {
     const params = {
@@ -228,11 +229,11 @@ export default function TradeList() {
       pageSize: rowsPerPage,
       search: {
         filterName: filterName,
-        filterStartDate: fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        filterEndDate: fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'")
+        filterStartDate: fDateTime(start_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        filterEndDate: fDateTime(end_date, "yyyy-MM-dd'T'HH:mm:ss'Z'")
       }
     };
-    dispatch(fetchAccount(activeAccount.id));
+
     if (filterStatus == 'active_trades') {
       const queryPositionsOrdersParams = new URLSearchParams();
       queryPositionsOrdersParams.append('page', page + 1);
@@ -249,8 +250,9 @@ export default function TradeList() {
       queryHistoryDealsParams.append('page', page + 1);
       queryHistoryDealsParams.append('itemPerPage', rowsPerPage);
       queryHistoryDealsParams.append('ticket', filterName);
-      queryHistoryDealsParams.append('date_from', fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-      queryHistoryDealsParams.append('date_to', fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+      queryHistoryDealsParams.append('date_from', fDateTime(start_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+      queryHistoryDealsParams.append('date_to', fDateTime(end_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+      queryHistoryDealsParams.append('entry', '0');
       queryHistoryDealsParams.append('entry', '1');
       queryHistoryDealsParams.append('entry', '2');
       queryHistoryDealsParams.append('entry', '3');
@@ -264,9 +266,9 @@ export default function TradeList() {
       const queryOrdersParams = new URLSearchParams();
       queryOrdersParams.append('page', page + 1);
       queryOrdersParams.append('itemPerPage', rowsPerPage);
-      queryOrdersParams.append('ticket', filterName);
-      queryOrdersParams.append('date_from', fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-      queryOrdersParams.append('date_to', fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+      if (filterName) {
+        queryOrdersParams.append('ticket', filterName);
+      }
       dispatch(
         fetchOrders({
           id: activeAccount.id,
@@ -278,8 +280,8 @@ export default function TradeList() {
       queryHistoryOrdersParams.append('page', page + 1);
       queryHistoryOrdersParams.append('itemPerPage', rowsPerPage);
       queryHistoryOrdersParams.append('ticket', filterName);
-      queryHistoryOrdersParams.append('date_from', fDateTime(filterStartDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-      queryHistoryOrdersParams.append('date_to', fDateTime(filterEndDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+      queryHistoryOrdersParams.append('date_from', fDateTime(start_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+      queryHistoryOrdersParams.append('date_to', fDateTime(end_date, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
       queryHistoryOrdersParams.append('state', 0);
       queryHistoryOrdersParams.append('state', 1);
       queryHistoryOrdersParams.append('state', 2);
@@ -296,7 +298,14 @@ export default function TradeList() {
         })
       );
     }
-  }, [dispatch, active_trades_page, closed_trades_page, active_pending_orders_page, closed_executed_orders_page]);
+  }, [
+    dispatch,
+    active_trades_page,
+    closed_trades_page,
+    active_pending_orders_page,
+    closed_executed_orders_page,
+    filterName
+  ]);
 
   const [loading, setLoading] = useState(false);
 
@@ -313,16 +322,16 @@ export default function TradeList() {
   useEffect(() => {
     if (filterStatus == 'active_trades') {
       setTableData(activeAccountPositionOrders.data);
-      setLoading(activeAccountPositionOrders.loading);
+      // setLoading(activeAccountPositionOrders.loading);
     } else if (filterStatus == 'closed_trades') {
       setTableData(activeAccountHistoryDeals.data);
-      setLoading(activeAccountHistoryDeals.loading);
+      // setLoading(activeAccountHistoryDeals.loading);
     } else if (filterStatus == 'active_pending_orders') {
       setTableData(activeAccountOrders.data);
-      setLoading(activeAccountOrders.loading);
+      // setLoading(activeAccountOrders.loading);
     } else if (filterStatus == 'closed_executed_orders') {
       setTableData(activeAccountHistoryOrders.data);
-      setLoading(activeAccountHistoryOrders.loading);
+      // setLoading(activeAccountHistoryOrders.loading);
     }
   }, [
     filterStatus,
@@ -335,9 +344,7 @@ export default function TradeList() {
   const denseHeight = dense ? 56 : 76;
 
   const isNotFound =
-    (!tableData.length && !!filterName) ||
-    (!tableData.length && !!filterEndDate) ||
-    (!tableData.length && !!filterStartDate);
+    (!tableData.length && !!filterName) || (!tableData.length && !!end_date) || (!tableData.length && !!start_date);
 
   const total =
     activeAccountHistoryDeals.count +
@@ -346,12 +353,6 @@ export default function TradeList() {
     activeAccountHistoryOrders.count;
 
   const TABS = [
-    {
-      value: 'closed_trades',
-      label: 'Closed Trades',
-      color: 'info',
-      count: activeAccountHistoryDeals.count
-    },
     { value: 'active_trades', label: 'Active Trades', color: 'success', count: activeAccountPositionOrders.count },
     {
       value: 'active_pending_orders',
@@ -364,19 +365,72 @@ export default function TradeList() {
       label: 'Order History',
       color: 'error',
       count: activeAccountHistoryOrders.count
+    },
+    {
+      value: 'closed_trades',
+      label: 'Closed Trades',
+      color: 'info',
+      count: activeAccountHistoryDeals.count
     }
   ];
+
+  const {
+    dueDate,
+    startTime,
+    endTime,
+    isSameDays,
+    isSameMonths,
+    onChangeDueDate,
+    openPicker,
+    onOpenPicker,
+    onClosePicker
+  } = useDatePicker({
+    date: [start_date, end_date]
+  });
 
   return (
     <Page title="Trade: Journal">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Trade Journal"
+          heading="Hi, Welcome back 👋"
           links={[
-            { name: 'Dashboard', href: router.generatePath('terminal-portal.dashboard') },
+            {
+              name: 'Analytics',
+              href: router.generatePath('terminal-portal.analytics')
+            },
             { name: 'Trades', href: router.generatePath('terminal-portal.trades') },
             { name: 'Journal' }
           ]}
+          action={
+            <Button onClick={onOpenPicker} variant="outlined">
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                {startTime && endTime && (
+                  <DisplayTime
+                    startTime={startTime}
+                    endTime={endTime}
+                    isSameDays={isSameDays}
+                    isSameMonths={isSameMonths}
+                    onOpenPicker={onOpenPicker}
+                  />
+                )}
+                <Tooltip title="Select Date Range">
+                  <>
+                    <Iconify icon={'eva:calendar-fill'} width={20} height={20} />
+                  </>
+                </Tooltip>
+
+                <DesktopDateRangePicker
+                  open={openPicker}
+                  onClose={onClosePicker}
+                  onOpen={onOpenPicker}
+                  maxDate={new Date()}
+                  value={dueDate}
+                  onChange={onChangeDueDate}
+                  renderInput={() => {}}
+                />
+              </Stack>
+            </Button>
+          }
         />
 
         <Card sx={{ mb: 5 }}>
@@ -386,13 +440,6 @@ export default function TradeList() {
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
               sx={{ py: 2 }}
             >
-              <TradeAnalytic
-                title="Closed Trades"
-                total={activeAccountHistoryDeals.count}
-                percent={(activeAccountHistoryDeals.count / total) * 100}
-                icon="ic:round-receipt"
-                color={theme.palette.info.main}
-              />
               <TradeAnalytic
                 title="Active Trades"
                 total={activeAccountPositionOrders.count}
@@ -414,6 +461,13 @@ export default function TradeList() {
                 icon="eva:file-fill"
                 color={theme.palette.error.main}
               />
+              <TradeAnalytic
+                title="Closed Trades"
+                total={activeAccountHistoryDeals.count}
+                percent={(activeAccountHistoryDeals.count / total) * 100}
+                icon="ic:round-receipt"
+                color={theme.palette.info.main}
+              />
             </Stack>
           </Scrollbar>
         </Card>
@@ -429,12 +483,12 @@ export default function TradeList() {
               value === 'active_trades'
                 ? setPage(active_trades_page)
                 : value === 'closed_trades'
-                ? setPage(closed_trades_page)
-                : value === 'active_pending_orders'
-                ? setPage(active_pending_orders_page)
-                : value === 'closed_executed_orders'
-                ? setPage(closed_executed_orders_page)
-                : setPage(active_trades_page);
+                  ? setPage(closed_trades_page)
+                  : value === 'active_pending_orders'
+                    ? setPage(active_pending_orders_page)
+                    : value === 'closed_executed_orders'
+                      ? setPage(closed_executed_orders_page)
+                      : setPage(active_trades_page);
             }}
             sx={{ px: 2, bgcolor: 'background.neutral' }}
           >
@@ -456,18 +510,18 @@ export default function TradeList() {
 
           <TradeTableToolbar
             filterName={filterName}
-            filterStartDate={filterStartDate}
-            filterEndDate={filterEndDate}
+            filterStartDate={new Date(start_date)}
+            filterEndDate={new Date(end_date)}
             onFilterName={(filterName) => {
               setFilterName(filterName);
               setPage(0);
             }}
             onFilterStartDate={(newValue) => {
-              setFilterStartDate(newValue);
+              dispatch(setStartDate(newValue));
               setPage(0);
             }}
             onFilterEndDate={(newValue) => {
-              setFilterEndDate(newValue);
+              dispatch(setEndDate(newValue));
               setPage(0);
             }}
           />
@@ -526,12 +580,12 @@ export default function TradeList() {
                     filterStatus === 'active_trades'
                       ? ACTIVE_TRADES_TABLE_HEAD
                       : filterStatus === 'closed_trades'
-                      ? CLOSED_TRADES_TABLE_HEAD
-                      : filterStatus === 'active_pending_orders'
-                      ? ACTIVE_PENDING_ORDERS_TABLE_HEAD
-                      : filterStatus === 'closed_executed_orders'
-                      ? CLOSED_EXECUTED_ORDERS_TABLE_HEAD
-                      : ACTIVE_TRADES_TABLE_HEAD
+                        ? CLOSED_TRADES_TABLE_HEAD
+                        : filterStatus === 'active_pending_orders'
+                          ? ACTIVE_PENDING_ORDERS_TABLE_HEAD
+                          : filterStatus === 'closed_executed_orders'
+                            ? CLOSED_EXECUTED_ORDERS_TABLE_HEAD
+                            : ACTIVE_TRADES_TABLE_HEAD
                   }
                   rowCount={tableData.length}
                   numSelected={selected.length}
@@ -639,12 +693,12 @@ export default function TradeList() {
                 filterStatus === 'active_trades'
                   ? activeAccountPositionOrders.count
                   : filterStatus === 'closed_trades'
-                  ? activeAccountHistoryDeals.count
-                  : filterStatus === 'active_pending_orders'
-                  ? activeAccountOrders.count
-                  : filterStatus === 'closed_executed_orders'
-                  ? activeAccountHistoryOrders.count
-                  : activeAccountPositionOrders.count
+                    ? activeAccountHistoryDeals.count
+                    : filterStatus === 'active_pending_orders'
+                      ? activeAccountOrders.count
+                      : filterStatus === 'closed_executed_orders'
+                        ? activeAccountHistoryOrders.count
+                        : activeAccountPositionOrders.count
               }
               rowsPerPage={rowsPerPage}
               page={page}
@@ -653,12 +707,12 @@ export default function TradeList() {
                 filterStatus === 'active_trades'
                   ? setActiveTradesPage(value)
                   : filterStatus === 'closed_trades'
-                  ? setClosedTradesPage(value)
-                  : filterStatus === 'active_pending_orders'
-                  ? setActivePendingOrdersPage(value)
-                  : filterStatus === 'closed_executed_orders'
-                  ? setClosedExecutedOrdersPage(value)
-                  : setActiveTradesPage(value);
+                    ? setClosedTradesPage(value)
+                    : filterStatus === 'active_pending_orders'
+                      ? setActivePendingOrdersPage(value)
+                      : filterStatus === 'closed_executed_orders'
+                        ? setClosedExecutedOrdersPage(value)
+                        : setActiveTradesPage(value);
               }}
               onRowsPerPageChange={onChangeRowsPerPage}
             />

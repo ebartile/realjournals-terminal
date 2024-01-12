@@ -6,7 +6,6 @@ import { Checkbox, TableRow, TableCell, Typography, Stack, Link, MenuItem } from
 // utils
 import { fDateTime } from 'utils/formatTime';
 import createAvatar from 'utils/createAvatar';
-import { fCurrency, fShortenNumber } from 'utils/formatNumber';
 // components
 import Label from 'components/Label';
 import Avatar from 'components/Avatar';
@@ -32,9 +31,9 @@ export default function ClosedTradeTableRow({ row, selected, onSelectRow, onView
       hover
       sx={{ cursor: 'pointer' }}
       selected={selected}
-      onClick={() => {
-        onViewRow();
-      }}
+      // onClick={() => {
+      //   onViewRow();
+      // }}
     >
       <TableCell padding="checkbox" onClick={(event) => event.stopPropagation()}>
         <Checkbox checked={selected} onClick={onSelectRow} />
@@ -66,17 +65,17 @@ export default function ClosedTradeTableRow({ row, selected, onSelectRow, onView
         </Label>
       </TableCell>
 
-      <TableCell align="left">{fShortenNumber(price)}</TableCell>
+      <TableCell align="left">{price}</TableCell>
 
-      <TableCell align="center" color={(profit > 0 && 'success') || (profit < 0 && 'error') || 'default'}>
-        {fCurrency(profit)}
+      <TableCell align="center" color={profit > 0 ? 'success' : 'error'}>
+        {profit}
       </TableCell>
 
       <TableCell align="left">{swap}</TableCell>
 
-      <TableCell align="left">{fCurrency(fee)}</TableCell>
+      <TableCell align="left">{fee}</TableCell>
 
-      <TableCell align="left">{fCurrency(commission)}</TableCell>
+      <TableCell align="left">{commission}</TableCell>
 
       <TableCell align="left">
         <Label
