@@ -37,11 +37,11 @@ export default [
     dimensions: Lossers.dimensions,
     component: Lossers
   },
-  {
-    name: 'net_profit_loss',
-    dimensions: NetProfitLoss.dimensions,
-    component: NetProfitLoss
-  },
+  // {
+  //   name: 'net_profit_loss',
+  //   dimensions: NetProfitLoss.dimensions,
+  //   component: NetProfitLoss
+  // },
   {
     name: 'account_balance',
     dimensions: CurrentBalance.dimensions,
@@ -52,11 +52,11 @@ export default [
     dimensions: InviteFriends.dimensions,
     component: InviteFriends
   },
-  {
-    name: 'trade_allocation',
-    dimensions: TradeAllocation.dimensions,
-    component: TradeAllocation
-  },
+  // {
+  //   name: 'trade_allocation',
+  //   dimensions: TradeAllocation.dimensions,
+  //   component: TradeAllocation
+  // },
   {
     name: 'account_margin',
     dimensions: AccountMargin.dimensions,

@@ -152,6 +152,10 @@ const UpdateForm = () => {
     };
   }, [account]);
 
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [account, form, initialValues]);
+
   return (
     <Form form={form} initialValues={initialValues} onFinish={submitForm}>
       <Card>

@@ -21,7 +21,7 @@ export default function App() {
                 <ScrollToTop />
                 <GoogleAnalytics />
                 <Router />
-                <PresenceTimer />
+                {/* <PresenceTimer /> */}
               </AppContext.Provider>
             </NotistackProvider>
           </RtlLayout>
